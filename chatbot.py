@@ -1,60 +1,96 @@
-from chatterbot.trainers import ChatterBotCorpusTrainer
-from chatterbot import ChatBot
+import streamlit as st
 
-chatbot = ChatBot("My Bot")
+bot_name = "College Buddy"
 
-bot_trainer = ChatterBotCorpusTrainer(chatbot)
-bot_trainer.train("chatterbot.corpus.english")
+knowledge_base = {
 
+    "what is your name?" : [
+        f"My name is {bot_name}! \n Happy to help you out with your College enquiries!"
+    ],
 
-print("enter 'quit' to stop")
-while True:
-	user_input = input("You: ")
-	if user_input == 'quit':
-		break
-	print("Bot:",chatbot.get_response(user_input))
-	
-	
-OUTPUT:
-(base) student@student:~/Desktop$ python3 chatbot.py
-[nltk_data] Downloading package averaged_perceptron_tagger to
-[nltk_data]     /home/student/nltk_data...
-[nltk_data]   Package averaged_perceptron_tagger is already up-to-
-[nltk_data]       date!
-[nltk_data] Downloading package punkt to /home/student/nltk_data...
-[nltk_data]   Package punkt is already up-to-date!
-[nltk_data] Downloading package stopwords to
-[nltk_data]     /home/student/nltk_data...
-[nltk_data]   Package stopwords is already up-to-date!
-Training ai.yml: [####################] 100%
-Training botprofile.yml: [####################] 100%
-Training computers.yml: [####################] 100%
-Training conversations.yml: [####################] 100%
-Training emotion.yml: [####################] 100%
-Training food.yml: [####################] 100%
-Training gossip.yml: [####################] 100%
-Training greetings.yml: [####################] 100%
-Training health.yml: [####################] 100%
-Training history.yml: [####################] 100%
-Training humor.yml: [####################] 100%
-Training literature.yml: [####################] 100%
-Training money.yml: [####################] 100%
-Training movies.yml: [####################] 100%
-Training politics.yml: [####################] 100%
-Training psychology.yml: [####################] 100%
-Training science.yml: [####################] 100%
-Training sports.yml: [####################] 100%
-Training trivia.yml: [####################] 100%
-enter 'quit' to stop
-You: hi
-Bot: How are you doing?
-You: worst
-Bot: i could always improve myself compared to the pack.
-You: ok
-Bot: I can't read.
-You: why
-Bot: Is there a reason that I should?
-You: no
-Bot: Should I be? Did something happen?
-You: 
+    "hello": [
+        f"Hello my name is {bot_name}! \n Happy to help you out with your College enquiries!"
+    ],
 
+    "what are the best colleges from pune?": [
+        "COEP",
+        "PICT",
+        "VIT",
+        "CUMMINS",
+        "PCCOE"
+    ],
+
+    "which are the best engineering branches?" : [
+        "Computer Engineering",
+        "IT Engineering",
+        "ENTC Engineering"
+    ],
+
+    "what are the top branch cut-offs for coep?" : [
+        "Computer Engineering : 99.8 percentile",
+        "Does not have IT branch",
+        "ENTC Engineering: 99.2 percentile",
+    ],   
+
+    "what are the top branch cut-offs for pict?" : [
+        "Computer Engineering : 99.4 percentile",
+        "IT Engineering : 98.6 percentile",
+        "ENTC Engineering: 97.2 percentile",
+    ],  
+
+    "what are the top branch cut-offs for vit?" : [
+        "Computer Engineering : 99.8 percentile",
+        "IT Engineering: 97.1 percentile",
+        "ENTC Engineering: 96.2 percentile",
+    ],    
+
+    "what are the top branch cut-offs for cummins?" : [
+        "Computer Engineering : 99.8 percentile",
+        "Does not have IT branch",
+        "ENTC Engineering: 99.2",
+    ],  
+
+    "what are the top branch cut-offs for pccoe?" : [
+        "Computer Engineering : 99.8 percentile",
+        "Does not have IT branch",
+        "ENTC Engineering: 99.2",
+    ], 
+
+    "When do college admissions start?": [
+        "Admissions generally start around August",
+    ],
+   
+}
+
+st.header("College Enquiry Rule Based Chatbot")
+
+def respond(input: str):
+    if (input in knowledge_base):
+        print(input)
+        values = knowledge_base[input]
+        for value in values:
+            st.write(value)
+    else:
+        print(input)
+        key = input
+        st.write("Question is not present in the knowledge base!\nCould you please enter the appropriate answer for the question below-")
+        answer = st.text_input("Answer")
+        add = st.button("Add answer")
+        if(add):
+        	knowledge_base[key]=[answer]
+        	
+      
+if __name__=="__main__":
+	input = st.text_input("enter a query here")
+	input=input.lower()
+	col1, col2 = st.columns(2)
+
+	with col1:
+		ask=st.button("ask")
+	with col2:
+		quit=st.button("quit")
+	if(ask):
+		respond(input)
+	if(quit):
+		st.write("thnkyou for using chatbot")
+		
